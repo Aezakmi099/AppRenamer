@@ -1,0 +1,5 @@
+dist
+env
+testenv
+*.spec
+build
