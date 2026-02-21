@@ -32,6 +32,7 @@ Interfaz gráfica moderna con tema oscuro construida con PySide6.
 * `.wmv`
 * `.flv`
 * `.webm`
+* `.mpg`
 
 
 ### Subtítulos
