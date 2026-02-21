@@ -3,8 +3,8 @@ name: Build and Release
 on:
   push:
     branches:
-      - main   # Se ejecuta cada vez que hay push a main
-  workflow_dispatch:  # Permite ejecución manual
+      - main
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -55,7 +55,6 @@ jobs:
     name: Create Release
     needs: build
     runs-on: ubuntu-latest
-    # Eliminamos la condición de tags
     steps:
     - name: Download all artifacts
       uses: actions/download-artifact@v4
@@ -65,11 +64,12 @@ jobs:
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
+        tag_name: v1.0.0      # siempre usa este tag fijo
         files: |
           artifacts/**/*.exe
           artifacts/**/AppRenamer
         generate_release_notes: true
-        fail_on_unmatched_files: true
+        fail_on_unmatched_files: false
         overwrite_files: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
