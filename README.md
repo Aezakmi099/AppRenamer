@@ -92,7 +92,7 @@ pip install PySide6
 
 ---
 
-## ▶ Ejecutar desde código fuente
+### ▶ Ejecutar desde código fuente
 
 ```bash
 python main.py
@@ -100,28 +100,13 @@ python main.py
 
 ---
 
-## 🧊 Crear ejecutable (opcional)
+### 🧊 Usar ejecutable (opcional)
 
-Con PyInstaller:
-
-```bash
-pip install pyinstaller
-```
+Descargar el ejecutable desde aqui 👇
 
 ```bash
-pyinstaller --name="AppRenamer" \
-            --windowed \
-            --onefile \
-            --icon="Icon.ico" \
-            main.py
+https://github.com/Aezakmi099/AppRenamer/releases/tag/v1.0.0
 ```
-
-El ejecutable se generará en:
-
-```
-dist/
-```
-
 ---
 
 ## 📁 Estructura del proyecto
