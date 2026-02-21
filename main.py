@@ -38,13 +38,13 @@ class Mywidgets(QtWidgets.QWidget):
         self.path = ""
         self.extenciones = (
             ".mp4",
-            ".mpg",
             ".avi",
             ".mkv",
             ".mov",
             ".wmv",
             ".flv",
             ".webm",
+            ".mpg",
             ".str",
         )
         self.ListaV = []
@@ -61,7 +61,7 @@ class Mywidgets(QtWidgets.QWidget):
         title.setStyleSheet("font-size: 24px; font-weight: bold;")
         main_layout.addWidget(title)
 
-        # Selector de carpeta y eliminar carpeta seleccionada
+        # Selector de carpeta
         folder_layout = QtWidgets.QHBoxLayout()
 
         self.path_input = QtWidgets.QLineEdit()
@@ -69,10 +69,6 @@ class Mywidgets(QtWidgets.QWidget):
         folder_layout.addWidget(self.path_input)
 
         browse_btn = QtWidgets.QPushButton("📂 Buscar")
-        clear_btn = QtWidgets.QPushButton("🧹 Limpiar")
-        clear_btn.clicked.connect(self.clear_folders)
-        folder_layout.addWidget(browse_btn)
-        folder_layout.addWidget(clear_btn)
         browse_btn.clicked.connect(self.select_folder)
         folder_layout.addWidget(browse_btn)
 
@@ -82,7 +78,7 @@ class Mywidgets(QtWidgets.QWidget):
         self.file_list = QtWidgets.QListWidget()
         main_layout.addWidget(self.file_list)
 
-        # Botones parte baja
+        # Botones
         btn_layout = QtWidgets.QHBoxLayout()
 
         scan_btn = QtWidgets.QPushButton("🔍 Escanear")
@@ -137,13 +133,6 @@ class Mywidgets(QtWidgets.QWidget):
         if folder:
             self.path = folder
             self.path_input.setText(folder)
-
-    def clear_folders(self):
-        self.path = ''
-        self.path_input.clear()
-        self.result_area.clear()
-        self.file_list.clear()
-        self.ListaV.clear()
 
     def ListaVideos(self):
         self.file_list.clear()
@@ -200,8 +189,7 @@ class Mywidgets(QtWidgets.QWidget):
                 else:
                     self.file_list.addItem(f"{archivo}  ⚠️ No encontrado")
         else:
-            if self.file_list.count() == 0:
-                self.result_area.append("❌ Ruta Invalida")
+            self.result_area.append("❌ Ruta Invalida")
 
     def RenombrarNombre(self):
         for video in self.ListaV:
@@ -221,8 +209,7 @@ class Mywidgets(QtWidgets.QWidget):
                     except Exception as e:
                         self.result_area.append(f"❌ Error: {e}")
 
-        if self.file_list is None:
-            self.result_area.append("✔ Proceso terminado\n")
+        self.result_area.append("✔ Proceso terminado\n")
 
 
 if __name__ == "__main__":
