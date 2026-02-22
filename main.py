@@ -1,11 +1,13 @@
 import os
 import re
 import sys
+
+
 from PySide6 import QtWidgets, QtCore, QtGui
 
 
 def ExtraerNombre(nombre):
-    patrones = [
+    patrons = [
         r"(?i)\b(?:cap(?:itulo)?|chapter|ch)\s*[\.\-_ ]?\s*(\d{1,4})\b",
         r"(?i)\b(?:ep(?:isodio)?|episode)\s*[\.\-_ ]?\s*(\d{1,4})\b",
         r"(?i)\b(?:cap|ep|ch)\w*\s*[\.\-_ ]?\s*0*(\d{1,4})\b",
@@ -16,7 +18,7 @@ def ExtraerNombre(nombre):
     ]
 
     nombre = os.path.splitext(nombre)[0]
-    for patron in patrones:
+    for patron in patrons:
         m = re.search(patron, nombre)
         if m:
             return int(m.group(1))
@@ -24,10 +26,13 @@ def ExtraerNombre(nombre):
     return None
 
 
-class Mywidgets(QtWidgets.QWidget):
+class Midgets(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
 
+        self.archivo = None
+        self.folder = None
+        self.rename_btn: QtWidgets.QPushButton | None = None
         self.result_area = None
         self.file_list = None
         self.path_input = None
@@ -36,7 +41,7 @@ class Mywidgets(QtWidgets.QWidget):
         self.resize(900, 600)
 
         self.path = ""
-        self.extenciones = (
+        self.extension = (
             ".mp4",
             ".avi",
             ".mkv",
@@ -46,6 +51,8 @@ class Mywidgets(QtWidgets.QWidget):
             ".webm",
             ".mpg",
             ".str",
+            ".sub",
+            ".ass",
         )
         self.ListaV = []
 
@@ -85,9 +92,9 @@ class Mywidgets(QtWidgets.QWidget):
         scan_btn.clicked.connect(self.ListaVideos)
         btn_layout.addWidget(scan_btn)
 
-        rename_btn = QtWidgets.QPushButton("✏️ Renombrar")
-        rename_btn.clicked.connect(self.RenombrarNombre)
-        btn_layout.addWidget(rename_btn)
+        self.rename_btn = QtWidgets.QPushButton("✏️ Renombrar")
+        self.rename_btn.clicked.connect(self.RenombrarNombre)
+        btn_layout.addWidget(self.rename_btn)
 
         main_layout.addLayout(btn_layout)
 
@@ -129,28 +136,34 @@ class Mywidgets(QtWidgets.QWidget):
     # ---------------- Funciones ---------------- #
 
     def select_folder(self):
-        folder = QtWidgets.QFileDialog.getExistingDirectory(self, "Seleccionar carpeta")
-        if folder:
-            self.path = folder
-            self.path_input.setText(folder)
+        self.folder = QtWidgets.QFileDialog.getExistingDirectory(self, "Seleccionar carpeta")
+        if self.folder:
+            self.path = self.folder
+            self.path_input.setText(self.folder)
+
+            self.rename_btn.setEnabled(True)
+            self.rename_btn.setStyleSheet("background-color: #007ACC")
 
     def ListaVideos(self):
         self.file_list.clear()
         self.ListaV.clear()
         self.result_area.clear()
-
         self.path = self.path_input.text()
 
         if os.path.exists(self.path) and os.path.isdir(self.path):
             videos = []
-            subtitulos = []
+            subtitles = []
 
             # Hacer la Lista
-            for archivo in os.listdir(self.path):
-                if archivo.lower().endswith(self.extenciones):
-                    videos.append(archivo)
-                elif archivo.lower().endswith(".srt"):
-                    subtitulos.append(archivo)
+            for self.archivo in os.listdir(self.path):
+
+                if self.archivo.lower().endswith(self.extension):
+                    videos.append(self.archivo)
+                elif self.archivo.lower().endswith(".srt"):
+                    subtitles.append(self.archivo)
+
+            if videos == [] and subtitles == []:
+                self.result_area.append("❌ En tu ruta no hay videos o subtitulos")
 
             # Ordenar numericamente 1,2,3,10
             def ordenacion(file):
@@ -162,8 +175,8 @@ class Mywidgets(QtWidgets.QWidget):
             try:
                 if videos:
                     videos.sort(key=ordenacion)
-                if subtitulos:
-                    subtitulos.sort(key=ordenacion)
+                if subtitles:
+                    subtitles.sort(key=ordenacion)
             except Exception as e:
                 print(f"Error al ordenar: {e}")
 
@@ -179,7 +192,7 @@ class Mywidgets(QtWidgets.QWidget):
                     self.file_list.addItem(f"{archivo}  ⚠️ No encontrado")
 
             # Mostrar Subtitulos
-            for archivo in subtitulos:
+            for archivo in subtitles:
                 self.ListaV.append(archivo)
                 numero = ExtraerNombre(archivo)
 
@@ -189,7 +202,12 @@ class Mywidgets(QtWidgets.QWidget):
                 else:
                     self.file_list.addItem(f"{archivo}  ⚠️ No encontrado")
         else:
-            self.result_area.append("❌ Ruta Invalida")
+            if self.folder is None:
+                self.result_area.append("❌ Por favor ingrese una ruta")
+
+            else:
+                if os.path.exists(self.path) is not True and os.path.isdir(self.path) is not True:
+                    self.result_area.append("❌ Ruta Inválida")
 
     def RenombrarNombre(self):
         for video in self.ListaV:
@@ -207,13 +225,13 @@ class Mywidgets(QtWidgets.QWidget):
                         )
                         self.result_area.append(f"✅ {video} ➜ {nuevo_nombre}")
                     except Exception as e:
-                        self.result_area.append(f"❌ Error: {e}")
-
-        self.result_area.append("✔ Proceso terminado\n")
-
+                        if e:
+                            self.result_area.append("Por favor ingrese una nueva ruta")
+                            self.rename_btn.setStyleSheet("background-color: gray")
+                            self.rename_btn.setDisabled(True)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    window = Mywidgets()
+    window = Midgets()
     window.show()
     sys.exit(app.exec())

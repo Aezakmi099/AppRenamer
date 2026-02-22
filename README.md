@@ -1,43 +1,47 @@
 # 🎬 Series Renamer APP
 
-Aplicación de escritorio para **renombrar automáticamente episodios de series** detectando su número desde el nombre del archivo.
+Aplicación de escritorio para renombrar automáticamente episodios de
+series detectando su número directamente desde el nombre del archivo.
 
-Analiza archivos de video y subtítulos dentro de una carpeta, extrae el número de episodio usando múltiples patrones comunes y los renombra de forma ordenada.
+Escanea archivos de video y subtítulos dentro de una carpeta, identifica
+el número de episodio usando múltiples patrones comunes y los renombra
+de forma ordenada.
 
-Interfaz gráfica moderna con tema oscuro construida con PySide6.
+Incluye una interfaz gráfica moderna con tema oscuro, construida con
+PySide6.
 
 ---
 
-## ✨ Características
+## ✨ Características principales
 
-* Interfaz gráfica simple e intuitiva
-* Tema oscuro moderno
-* Detección automática del número de episodio
-* Compatible con múltiples formatos de nombres
-* Renombrado masivo en un clic
-* Ordenación numérica correcta (1, 2, 3, 10…)
-* Soporte para videos y subtítulos
-* Vista previa antes de renombrar
+-  Interfaz gráfica simple e intuitiva
+-  Tema oscuro moderno
+-  Detección automática del número de episodio
+-  Compatible con múltiples formatos de nombres
+-  Renombrado masivo en un solo clic
+-  Ordenación numérica correcta (1, 2, 3, 10…)
+-  Soporte para videos y subtítulos
+-  Vista previa antes de aplicar cambios
 
 ---
 
 ## 📂 Archivos soportados
 
-### Video
+### 🎥 Video
+-   .mp4
+-   .avi
+-   .mkv
+-   .mov
+-   .wmv
+-   .flv
+-   .webm
+-   .mpg
 
-* `.mp4`
-* `.avi`
-* `.mkv`
-* `.mov`
-* `.wmv`
-* `.flv`
-* `.webm`
-* `.mpg`
+### 💬 Subtítulos
 
-
-### Subtítulos
-
-* `.srt`
+-   .srt
+-   .sub
+-   .ass
 
 ---
 
@@ -46,66 +50,57 @@ Interfaz gráfica moderna con tema oscuro construida con PySide6.
 El programa reconoce números de episodio en formatos como:
 
 ```
-Capitulo 12
-Cap 12
-Episode 5
-Ep05
-Chapter 3
-Ch 7
-E01
-1x09
-c12
-NombreSerie 15.mkv
+- Capitulo 12 
+- Cap 12 
+- Episode 5 
+- Ep05 
+- Chapter 3 
+- Ch 7 E01 
+- 1x09 
+- c12
+- NombreSerie 15.mkv
 ```
 
-Y muchos más.
+### Y muchas variaciones adicionales.
 
 ---
 
 ## 🖥 Cómo usar
 
-1. Ejecuta la aplicación
-2. Pulsa **Buscar** y selecciona la carpeta
-3. Pulsa **Escanear** para ver la vista previa
-4. Pulsa **Renombrar**
+1.  Ejecuta la aplicación
+2.  Pulsa Buscar y selecciona la carpeta
+3.  Pulsa Escanear para ver la vista previa
+4.  Pulsa Renombrar
 
-Los archivos se renombrarán así:
+### Resultado del renombrado:
 
-```
-Serie.capitulo.12.mkv  →  12.mkv
-Episode_03.mp4         →  3.mp4
-```
+- Serie.capitulo.12.mkv → 12.mkv 
+- Episode_03.mp4 → 3.mp4
 
 ---
 
-## 📦 Instalación
+## 🧊 Ejecutable 
 
-### Requisitos
+Descarga directamente desde Releases:
 
-* Python 3.9 o superior
+- [Windows](https://github.com/Aezakmi099/AppRenamer/releases/download/v1.0.0/AppRenamer.exe)
 
-Instalar dependencias:
+- [Linux](https://github.com/Aezakmi099/AppRenamer/releases/download/v1.0.0/AppRenamer)
 
+
+---
+
+## 📦 Instalación manual (opcional)
+
+Requisitos: Python 3.9 o superior
+
+Instalar dependencias: 
 ```bash
 pip install PySide6
 ```
-
----
-
-### ▶ Ejecutar desde código fuente
-
+Ejecutar desde el código fuente: 
 ```bash
 python main.py
-```
-
----
-
-### 🧊 Usar ejecutable (opcional)
-
-Descargar el ejecutable desde aqui 👇
-
-```bash
-https://github.com/Aezakmi099/AppRenamer/releases/tag/v1.0.0
 ```
 ---
 
@@ -115,32 +110,32 @@ https://github.com/Aezakmi099/AppRenamer/releases/tag/v1.0.0
 project/
 │
 ├── main.py
-├── Icon.ico
+├── Icon.ico 
 └── README.md
 ```
 
 ---
 
-## ⚠ Recomendaciones
+## ⚠ Recomendaciones importantes
 
-* Haz copia de seguridad antes de renombrar archivos importantes
-* Evita archivos con números no relacionados al episodio
-* Verifica la vista previa antes de aplicar cambios
+-   Haz copia de seguridad antes de renombrar archivos importantes
+-   Evita archivos con números que no correspondan al episodio
+-   Revisa siempre la vista previa antes de confirmar cambios
 
 ---
 
-## 🧠 Cómo funciona
+## 🧠 Cómo funciona internamente
 
-1. Escanea los nombres de archivo
-2. Aplica expresiones regulares para detectar el número
-3. Ordena los archivos numéricamente
-4. Renombra usando solo el número detectado
+1.  Escanea los nombres de los archivos
+2.  Aplica expresiones regulares para detectar el número de episodio
+3.  Ordena los archivos numéricamente
+4.  Renombra usando únicamente el número detectado
 
 ---
 
 ## 👨‍💻 Autor
 
-Hecho por **Aezakmi**
+- Aezakmi
 
 ---
 
