@@ -2,7 +2,6 @@ import os
 import re
 import sys
 
-
 from PySide6 import QtWidgets, QtCore, QtGui
 
 
@@ -30,10 +29,12 @@ class Midgets(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
 
+        self.video = None
+        self.nuevo_nombre = None
         self.archivo = None
         self.folder = None
         self.rename_btn: QtWidgets.QPushButton | None = None
-        self.result_area = None
+        self.result_area: QtWidgets.QTextEdit | None = None
         self.file_list = None
         self.path_input = None
         self.setWindowTitle("Series Renamer APP")
@@ -215,20 +216,24 @@ class Midgets(QtWidgets.QWidget):
 
             if numero:
                 extension = os.path.splitext(video)[1]
-                nuevo_nombre = f"{numero}{extension}"
+                self.nuevo_nombre = f"{numero}{extension}"
 
-                if video != nuevo_nombre:
+                if video != self.nuevo_nombre:
                     try:
                         os.rename(
                             os.path.join(self.path, video),
-                            os.path.join(self.path, nuevo_nombre),
+                            os.path.join(self.path, self.nuevo_nombre),
                         )
-                        self.result_area.append(f"✅ {video} ➜ {nuevo_nombre}")
+                        self.result_area.append(f"✅ {video} ➜ {self.nuevo_nombre}")
                     except Exception as e:
                         if e:
                             self.result_area.append("Por favor ingrese una nueva ruta")
                             self.rename_btn.setStyleSheet("background-color: gray")
                             self.rename_btn.setDisabled(True)
+        if self.video == self.nuevo_nombre :
+            self.result_area.append("❌ Todos los archivos estan renombrados")
+            self.rename_btn.setStyleSheet("background-color: gray")
+            self.rename_btn.setDisabled(True)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
