@@ -179,7 +179,7 @@ class Midgets(QtWidgets.QWidget):
                     subtitles.append(self.archivo)
 
             if videos == [] and subtitles == []:
-                self.result_area.append("❌ En tu ruta no hay videos o subtitulos")
+                self.result_area.append("❌: En tu ruta no hay videos o subtitulos")
 
             # Ordenar numericamente 1,2,3,10
             def ordenacion(file):
@@ -194,7 +194,7 @@ class Midgets(QtWidgets.QWidget):
                 if subtitles:
                     subtitles.sort(key=ordenacion)
             except Exception as e:
-                print(f"Error al ordenar: {e}")
+                print(f"Error al ordenar: {e}") # Mas debug que otra cosa ;)
 
             # Mostrar Videos
             for archivo in videos:
@@ -205,7 +205,7 @@ class Midgets(QtWidgets.QWidget):
                     nuevo = f"{numero}{os.path.splitext(archivo)[1]}"
                     self.file_list.addItem(f"{archivo}  ➜  {nuevo}")
                 else:
-                    self.file_list.addItem(f"{archivo}  ⚠️ No encontrado")
+                    self.file_list.addItem(f"{archivo}  ⚠️: No es posible renombrar :(")
 
             # Mostrar Subtitulos
             for archivo in subtitles:
@@ -216,14 +216,14 @@ class Midgets(QtWidgets.QWidget):
                     nuevo = f"{numero}{os.path.splitext(archivo)[1]}"
                     self.file_list.addItem(f"{archivo}  ➜  {nuevo}")
                 else:
-                    self.file_list.addItem(f"{archivo}  ⚠️ No encontrado")
+                    self.file_list.addItem(f"{archivo}  ⚠️: No es posible renombrar :(")
         else:
             if self.folder is None:
-                self.result_area.append("❌ Por favor ingrese una ruta")
+                self.result_area.append("❌: Por favor ingrese una ruta")
 
             else:
                 if os.path.exists(self.path) is not True and os.path.isdir(self.path) is not True:
-                    self.result_area.append("❌ Ruta Inválida")
+                    self.result_area.append("❌: Ruta Inválida")
 
     def RenombrarNombre(self):
         video = None
@@ -246,11 +246,11 @@ class Midgets(QtWidgets.QWidget):
                         todo_ren = True
 
         if todo_ren:
-            self.result_area.append("❌ Por favor ingrese una nueva ruta, ya esta todo renombrado")
+            self.result_area.append("❌: Por favor ingrese una nueva ruta, ya esta todo renombrado")
             self.rename_btn.setStyleSheet("background-color: gray")
             self.rename_btn.setEnabled(False)
         if video == self.nuevo_nombre:
-            self.result_area.append("❌ No hay archivos que renombrar")
+            self.result_area.append("✅: Esta todo renombrado!!")
             self.rename_btn.setStyleSheet("background-color: gray")
             self.rename_btn.setEnabled(False)
 
