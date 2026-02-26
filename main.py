@@ -28,17 +28,15 @@ def ExtraerNombre(nombre):
 class Midgets(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
-        self.result_area = QtWidgets.QTextEdit()
-        self.path_input = QtWidgets.QLineEdit()
-        self.file_list = None
 
-
-        self.rename_btn = None
-
+        self.video = None
         self.nuevo_nombre = None
         self.archivo = None
         self.folder = None
-
+        self.rename_btn: QtWidgets.QPushButton | None = None
+        self.result_area: QtWidgets.QTextEdit | None = None
+        self.file_list = None
+        self.path_input = None
         self.setWindowTitle("Series Renamer APP")
         self.setWindowIcon(QtGui.QIcon("Icon.ico"))
         self.resize(900, 600)
@@ -53,8 +51,6 @@ class Midgets(QtWidgets.QWidget):
             ".flv",
             ".webm",
             ".mpg",
-        )
-        self.extension_sub = (
             ".str",
             ".sub",
             ".ass",
@@ -78,8 +74,6 @@ class Midgets(QtWidgets.QWidget):
 
         self.path_input = QtWidgets.QLineEdit()
         self.path_input.setPlaceholderText("Selecciona la carpeta...")
-        self.path_input.setClearButtonEnabled(True)
-        self.path_input.textChanged.connect(self.clear_btn)
         folder_layout.addWidget(self.path_input)
 
         browse_btn = QtWidgets.QPushButton("📂 Buscar")
@@ -141,10 +135,6 @@ class Midgets(QtWidgets.QWidget):
         """)
 
     # ---------------- Funciones ---------------- #
-    def clear_btn(self):
-        if self.result_area:
-            self.file_list.clear()
-            self.result_area.clear()
 
     def select_folder(self):
         self.folder = QtWidgets.QFileDialog.getExistingDirectory(self, "Seleccionar carpeta")
@@ -161,11 +151,6 @@ class Midgets(QtWidgets.QWidget):
         self.result_area.clear()
         self.path = self.path_input.text()
 
-        # Habilitar boton de renombrar cuando pulsas en Escanear
-        self.rename_btn.setStyleSheet("background-color: #007ACC")
-        self.rename_btn.setEnabled(True)
-
-
         if os.path.exists(self.path) and os.path.isdir(self.path):
             videos = []
             subtitles = []
@@ -175,11 +160,11 @@ class Midgets(QtWidgets.QWidget):
 
                 if self.archivo.lower().endswith(self.extension):
                     videos.append(self.archivo)
-                elif self.archivo.lower().endswith(self.extension_sub):
+                elif self.archivo.lower().endswith(".srt"):
                     subtitles.append(self.archivo)
 
             if videos == [] and subtitles == []:
-                self.result_area.append("❌: En tu ruta no hay videos o subtitulos")
+                self.result_area.append("❌ En tu ruta no hay videos o subtitulos")
 
             # Ordenar numericamente 1,2,3,10
             def ordenacion(file):
@@ -194,7 +179,7 @@ class Midgets(QtWidgets.QWidget):
                 if subtitles:
                     subtitles.sort(key=ordenacion)
             except Exception as e:
-                print(f"Error al ordenar: {e}") # Mas debug que otra cosa ;)
+                print(f"Error al ordenar: {e}")
 
             # Mostrar Videos
             for archivo in videos:
@@ -205,7 +190,7 @@ class Midgets(QtWidgets.QWidget):
                     nuevo = f"{numero}{os.path.splitext(archivo)[1]}"
                     self.file_list.addItem(f"{archivo}  ➜  {nuevo}")
                 else:
-                    self.file_list.addItem(f"{archivo}  ⚠️: No es posible renombrar :(")
+                    self.file_list.addItem(f"{archivo}  ⚠️ No encontrado")
 
             # Mostrar Subtitulos
             for archivo in subtitles:
@@ -216,24 +201,23 @@ class Midgets(QtWidgets.QWidget):
                     nuevo = f"{numero}{os.path.splitext(archivo)[1]}"
                     self.file_list.addItem(f"{archivo}  ➜  {nuevo}")
                 else:
-                    self.file_list.addItem(f"{archivo}  ⚠️: No es posible renombrar :(")
+                    self.file_list.addItem(f"{archivo}  ⚠️ No encontrado")
         else:
             if self.folder is None:
-                self.result_area.append("❌: Por favor ingrese una ruta")
+                self.result_area.append("❌ Por favor ingrese una ruta")
 
             else:
                 if os.path.exists(self.path) is not True and os.path.isdir(self.path) is not True:
-                    self.result_area.append("❌: Ruta Inválida")
+                    self.result_area.append("❌ Ruta Inválida")
 
     def RenombrarNombre(self):
-        video = None
-        todo_ren = False
         for video in self.ListaV:
             numero = ExtraerNombre(video)
 
             if numero:
                 extension = os.path.splitext(video)[1]
                 self.nuevo_nombre = f"{numero}{extension}"
+
                 if video != self.nuevo_nombre:
                     try:
                         os.rename(
@@ -241,19 +225,15 @@ class Midgets(QtWidgets.QWidget):
                             os.path.join(self.path, self.nuevo_nombre),
                         )
                         self.result_area.append(f"✅ {video} ➜ {self.nuevo_nombre}")
-
-                    except FileNotFoundError: # [WinError 2] El sistema no puede encontrar el archivo especificado
-                        todo_ren = True
-
-        if todo_ren:
-            self.result_area.append("❌: Por favor ingrese una nueva ruta, ya esta todo renombrado")
+                    except Exception as e:
+                        if e:
+                            self.result_area.append("Por favor ingrese una nueva ruta")
+                            self.rename_btn.setStyleSheet("background-color: gray")
+                            self.rename_btn.setDisabled(True)
+        if self.video == self.nuevo_nombre :
+            self.result_area.append("❌ Todos los archivos estan renombrados")
             self.rename_btn.setStyleSheet("background-color: gray")
-            self.rename_btn.setEnabled(False)
-        if video == self.nuevo_nombre:
-            self.result_area.append("✅: Esta todo renombrado!!")
-            self.rename_btn.setStyleSheet("background-color: gray")
-            self.rename_btn.setEnabled(False)
-
+            self.rename_btn.setDisabled(True)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
