@@ -6,21 +6,21 @@ from PySide6 import QtWidgets, QtCore, QtGui
 
 
 def ExtraerNombre(nombre):
-    patrons = [
-        r"(?i)\b(?:cap(?:itulo)?|chapter|ch)\s*[\.\-_ ]?\s*(\d{1,4})\b",
-        r"(?i)\b(?:ep(?:isodio)?|episode)\s*[\.\-_ ]?\s*(\d{1,4})\b",
-        r"(?i)\b(?:cap|ep|ch)\w*\s*[\.\-_ ]?\s*0*(\d{1,4})\b",
-        r"(?i)E0*(\d{1,3})\b",
-        r"(?i)\bc\.?\s*0*(\d{1,4})\b",
-        r"(?i)(?:^|[^a-z0-9])\d{1,2}\s*x\s*0*(\d{1,3})(?=\D|$)",
-        r"(\d{1,4})(?!.*\d)",
-    ]
-
     nombre = os.path.splitext(nombre)[0]
-    for patron in patrons:
-        m = re.search(patron, nombre)
-        if m:
-            return int(m.group(1))
+
+    # eliminar resoluciones, codecs y tags
+    nombre = re.sub(
+        r"\b(480p|720p|1080p|2160p|x264|x265|h264|bluray|webrip)\b",
+        "",
+        nombre,
+        flags=re.I,
+    )
+
+    patron = re.compile(r"(?<!\d)0*(\d{1,4})(?!.*\d)")
+
+    m = patron.search(nombre)
+    if m:
+        return int(m.group(1))
 
     return None
 
@@ -30,8 +30,8 @@ class Midgets(QtWidgets.QWidget):
         super().__init__()
         self.result_area = QtWidgets.QTextEdit()
         self.path_input = QtWidgets.QLineEdit()
-        self.file_list = None
-
+        self.file_list = QtWidgets.QListWidget()
+        self.file_preview = QtWidgets.QListWidget()
 
         self.rename_btn = None
 
@@ -55,7 +55,7 @@ class Midgets(QtWidgets.QWidget):
             ".mpg",
         )
         self.extension_sub = (
-            ".str",
+            ".srt",
             ".sub",
             ".ass",
         )
@@ -88,15 +88,32 @@ class Midgets(QtWidgets.QWidget):
 
         main_layout.addLayout(folder_layout)
 
-        # Lista de archivos
+        # Contenedor para los dos titulos de las listas
+        title_container = QtWidgets.QHBoxLayout()
+
+        main_layout.addLayout(title_container)
+
+        # Contenedor para las dos listas
+        list_container = QtWidgets.QHBoxLayout()
+
+        # Lista de archivos (izquierda)
         self.file_list = QtWidgets.QListWidget()
-        main_layout.addWidget(self.file_list)
+        self.file_list.setMinimumWidth(300)
+        list_container.addWidget(self.file_list)
+
+        # Lista de previsualización (derecha)
+        self.file_preview = QtWidgets.QListWidget()
+        self.file_preview.setMinimumWidth(300)
+
+        list_container.addWidget(self.file_preview)
+
+        main_layout.addLayout(list_container)
 
         # Botones
         btn_layout = QtWidgets.QHBoxLayout()
 
         scan_btn = QtWidgets.QPushButton("🔍 Escanear")
-        scan_btn.clicked.connect(self.ListaVideos)
+        scan_btn.clicked.connect(self.ListVideos)
         btn_layout.addWidget(scan_btn)
 
         self.rename_btn = QtWidgets.QPushButton("✏️ Renombrar")
@@ -116,7 +133,7 @@ class Midgets(QtWidgets.QWidget):
         autor.setStyleSheet("font-size: 10px; font-weight: bold;")
         main_layout.addWidget(autor)
 
-    # ---------------- Tema oscuro ---------------- #
+    # ---------------- Style ---------------- #
 
     def apply_dark_theme(self):
         self.setStyleSheet("""
@@ -138,16 +155,77 @@ class Midgets(QtWidgets.QWidget):
             QPushButton:hover {
                 background-color: #005A9E;
             }
-        """)
+                QScrollBar:vertical {
+                    border: none;
+                    background: #2D2D2D;
+                    width: 14px;
+                    border-radius: 7px;
+                    margin: 0px;
+                }
+
+                QScrollBar::handle:vertical {
+                    background: #555555;
+                    min-height: 20px;
+                    border-radius: 7px;
+                }
+
+                QScrollBar::handle:vertical:hover {
+                    background: #777777;
+                }
+
+                QScrollBar::handle:vertical:pressed {
+                    background: #999999;
+                }
+
+                QScrollBar::add-line:vertical, 
+                QScrollBar::sub-line:vertical {
+                    border: none;
+                    background: none;
+                    height: 0px;
+                }
+
+                QScrollBar::add-page:vertical, 
+                QScrollBar::sub-page:vertical {
+                    background: none;
+                }
+
+                QScrollBar:horizontal {
+                    border: none;
+                    background: #2D2D2D;
+                    height: 14px;
+                    border-radius: 7px;
+                    margin: 0px;
+                }
+
+                QScrollBar::handle:horizontal {
+                    background: #555555;
+                    min-width: 20px;
+                    border-radius: 7px;
+                }
+
+                QScrollBar::handle:horizontal:hover {
+                    background: #777777;
+                }
+
+                QScrollBar::add-line:horizontal, 
+                QScrollBar::sub-line:horizontal {
+                    border: none;
+                    background: none;
+                    width: 0px;
+                }
+            """)
 
     # ---------------- Funciones ---------------- #
     def clear_btn(self):
         if self.result_area:
             self.file_list.clear()
+            self.file_preview.clear()
             self.result_area.clear()
 
     def select_folder(self):
-        self.folder = QtWidgets.QFileDialog.getExistingDirectory(self, "Seleccionar carpeta")
+        self.folder = QtWidgets.QFileDialog.getExistingDirectory(
+            self, "Seleccionar carpeta"
+        )
         if self.folder:
             self.path = self.folder
             self.path_input.setText(self.folder)
@@ -155,8 +233,9 @@ class Midgets(QtWidgets.QWidget):
             self.rename_btn.setEnabled(True)
             self.rename_btn.setStyleSheet("background-color: #007ACC")
 
-    def ListaVideos(self):
+    def ListVideos(self):
         self.file_list.clear()
+        self.file_preview.clear()
         self.ListaV.clear()
         self.result_area.clear()
         self.path = self.path_input.text()
@@ -164,7 +243,6 @@ class Midgets(QtWidgets.QWidget):
         # Habilitar boton de renombrar cuando pulsas en Escanear
         self.rename_btn.setStyleSheet("background-color: #007ACC")
         self.rename_btn.setEnabled(True)
-
 
         if os.path.exists(self.path) and os.path.isdir(self.path):
             videos = []
@@ -179,7 +257,7 @@ class Midgets(QtWidgets.QWidget):
                     subtitles.append(self.archivo)
 
             if videos == [] and subtitles == []:
-                self.result_area.append("❌: En tu ruta no hay videos o subtitulos")
+                self.result_area.append("❌ En tu ruta no hay videos o subtitulos")
 
             # Ordenar numericamente 1,2,3,10
             def ordenacion(file):
@@ -194,7 +272,7 @@ class Midgets(QtWidgets.QWidget):
                 if subtitles:
                     subtitles.sort(key=ordenacion)
             except Exception as e:
-                print(f"Error al ordenar: {e}") # Mas debug que otra cosa ;)
+                print(f"Error al ordenar: {e}")  # Mas debug que otra cosa ;)
 
             # Mostrar Videos
             for archivo in videos:
@@ -203,9 +281,10 @@ class Midgets(QtWidgets.QWidget):
 
                 if numero:
                     nuevo = f"{numero}{os.path.splitext(archivo)[1]}"
-                    self.file_list.addItem(f"{archivo}  ➜  {nuevo}")
+                    self.file_list.addItem(f"{archivo}")
+                    self.file_preview.addItem(f"{nuevo}")
                 else:
-                    self.file_list.addItem(f"{archivo}  ⚠️: No es posible renombrar :(")
+                    self.file_list.addItem(f"{archivo}  ⚠️ No es posible renombrar :(")
 
             # Mostrar Subtitulos
             for archivo in subtitles:
@@ -214,16 +293,20 @@ class Midgets(QtWidgets.QWidget):
 
                 if numero:
                     nuevo = f"{numero}{os.path.splitext(archivo)[1]}"
-                    self.file_list.addItem(f"{archivo}  ➜  {nuevo}")
+                    self.file_list.addItem(f"{archivo}")
+                    self.file_preview.addItem(f"{nuevo}")
                 else:
-                    self.file_list.addItem(f"{archivo}  ⚠️: No es posible renombrar :(")
+                    self.file_list.addItem(f"{archivo}  ⚠️ No es posible renombrar :(")
         else:
             if self.folder is None:
-                self.result_area.append("❌: Por favor ingrese una ruta")
+                self.result_area.append("❌ Por favor ingrese una ruta")
 
             else:
-                if os.path.exists(self.path) is not True and os.path.isdir(self.path) is not True:
-                    self.result_area.append("❌: Ruta Inválida")
+                if (
+                    os.path.exists(self.path) is not True
+                    and os.path.isdir(self.path) is not True
+                ):
+                    self.result_area.append("❌ Ruta Inválida")
 
     def RenombrarNombre(self):
         video = None
@@ -242,15 +325,19 @@ class Midgets(QtWidgets.QWidget):
                         )
                         self.result_area.append(f"✅ {video} ➜ {self.nuevo_nombre}")
 
-                    except FileNotFoundError: # [WinError 2] El sistema no puede encontrar el archivo especificado
+                    except (
+                        FileNotFoundError
+                    ):  # [WinError 2] El sistema no puede encontrar el archivo especificado
                         todo_ren = True
 
         if todo_ren:
-            self.result_area.append("❌: Por favor ingrese una nueva ruta, ya esta todo renombrado")
+            self.result_area.append(
+                "❌ Por favor ingrese una nueva ruta, ya esta todo renombrado"
+            )
             self.rename_btn.setStyleSheet("background-color: gray")
             self.rename_btn.setEnabled(False)
         if video == self.nuevo_nombre:
-            self.result_area.append("✅: Esta todo renombrado!!")
+            self.result_area.append("✅ Esta todo renombrado")
             self.rename_btn.setStyleSheet("background-color: gray")
             self.rename_btn.setEnabled(False)
 
