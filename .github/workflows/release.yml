@@ -38,7 +38,7 @@ jobs:
 
     - name: Build with PyInstaller
       run: |
-        pyinstaller --name="AppRenamer" --windowed --onefile --icon="Icon.ico" main.py
+        pyinstaller --name="AppRenamer" --windowed --onefile --icon="Icons/Icon.ico" main.py
       shell: bash
 
     - name: Upload Artifacts
@@ -72,4 +72,5 @@ jobs:
         fail_on_unmatched_files: false
         overwrite_files: true
       env:
+
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
