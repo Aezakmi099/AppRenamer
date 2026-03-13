@@ -2,8 +2,8 @@
 import os
 from PySide6 import QtWidgets, QtCore, QtGui
 
-from core.renamer import extraer_numero
-from styles.theme import apply_dark_theme
+from app.core.renamer import extraer_numero
+from app.styles.theme import ApplyDarkTheme
 
 
 class MainWindow(QtWidgets.QWidget):
@@ -18,7 +18,7 @@ class MainWindow(QtWidgets.QWidget):
         self.videos = []
 
         self.setup_ui()
-        apply_dark_theme(self)
+        ApplyDarkTheme(self)
 
     def setup_ui(self):
 
