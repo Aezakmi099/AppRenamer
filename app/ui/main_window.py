@@ -21,10 +21,10 @@ class MainWindow(QtWidgets.QWidget):
         ApplyDarkTheme(self)
 
     def setup_ui(self):
-
         layout = QtWidgets.QVBoxLayout(self)
 
-        title = QtWidgets.QLabel("🎬 Series Renamer")
+        title = QtWidgets.QLabel()
+        title.setText("Series Renamer APP")
         title.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet("font-size:24px;font-weight:bold;")
         layout.addWidget(title)
@@ -36,6 +36,7 @@ class MainWindow(QtWidgets.QWidget):
         folder_layout.addWidget(self.path_input)
 
         browse_btn = QtWidgets.QPushButton("Buscar")
+        browse_btn.setIcon(QtGui.QIcon("Icons/File Icons.png"))
         browse_btn.clicked.connect(self.select_folder)
         folder_layout.addWidget(browse_btn)
 
@@ -54,10 +55,12 @@ class MainWindow(QtWidgets.QWidget):
         btn_layout = QtWidgets.QHBoxLayout()
 
         scan_btn = QtWidgets.QPushButton("Escanear")
+        scan_btn.setIcon(QtGui.QIcon("Icons/Scan Icons.png"))
         scan_btn.clicked.connect(self.scan_folder)
         btn_layout.addWidget(scan_btn)
 
         rename_btn = QtWidgets.QPushButton("Renombrar")
+        rename_btn.setIcon(QtGui.QIcon("Icons/Rename Icons.png"))
         rename_btn.clicked.connect(self.rename_files)
         btn_layout.addWidget(rename_btn)
 

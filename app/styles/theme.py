@@ -407,7 +407,7 @@ def ApplyDarkTheme(widget: QtWidgets.QWidget):
             font-size: 9pt;
         }
     """)
-        
+    # PROXIMAMENTE AGREGARE EL TEMA BLANCO, PERO PRIMERO QUIERO TERMINAR DE PULIR EL TEMA OSCURO 
 def ApplyLightTheme(self):
     self.setStyleSheet("""
         /* ========== ESTILOS GENERALES ========== */
