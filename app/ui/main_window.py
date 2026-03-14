@@ -17,10 +17,11 @@ class MainWindow(QtWidgets.QWidget):
         self.path = ""
         self.videos = []
 
+        self.current_theme = "dark"  # variable que guarda el tema actual
+
         self.setup_ui()
+        self.apply_theme()  # aplicar el tema inicial
         
-        temaActual = themes.ApplyDarkTheme
-        temaActual()
         
     def setup_ui(self):
         layout = QtWidgets.QVBoxLayout(self)
@@ -37,9 +38,8 @@ class MainWindow(QtWidgets.QWidget):
                                 padding: 3px 8px;
                             """)
         self.btn_theme.setIcon(QtGui.QIcon("Icons/DarkTheme Icon.png"))
-        
-    
-        
+        self.btn_theme.clicked.connect(self.toggle_theme)
+
         titleLayout.addWidget(self.btn_theme)
         
         title = QtWidgets.QLabel()
@@ -147,6 +147,26 @@ class MainWindow(QtWidgets.QWidget):
         
             
 
-    def choose_theme(self):
-        pass
+    def apply_theme(self):
+        if self.current_theme == "dark":
+            themes.ApplyDarkTheme(self)
+            self.btn_theme.setIcon(QtGui.QIcon("Icons/DarkTheme Icon.png"))
+            self.btn_theme.setToolTip("Modo oscuro activo")
+        else:
+            themes.ApplyLightTheme(self)
+            self.btn_theme.setIcon(QtGui.QIcon("Icons/LightTheme Icon.png"))
+            self.btn_theme.setToolTip("Modo claro activo")
+
+    def toggle_theme(self):
+        self.result.clear()
+        
+        self.current_theme = "light" if self.current_theme == "dark" else "dark"
+        self.apply_theme()
+        self.result.append(f"Tema actual: {self.current_theme}")
+
+    def choose_theme(self, theme_name: str):
+        if theme_name not in ["dark", "light"]:
+            raise ValueError("theme_name debe ser 'dark' o 'light'")
+        self.current_theme = theme_name
+        self.apply_theme()
     
