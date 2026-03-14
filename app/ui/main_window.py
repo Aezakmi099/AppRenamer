@@ -3,7 +3,7 @@ import os
 from PySide6 import QtWidgets, QtCore, QtGui
 
 from app.core.renamer import extraer_numero
-from app.styles.theme import ApplyDarkTheme
+from app.styles.theme import themes
 
 
 class MainWindow(QtWidgets.QWidget):
@@ -18,12 +18,29 @@ class MainWindow(QtWidgets.QWidget):
         self.videos = []
 
         self.setup_ui()
-        ApplyDarkTheme(self)
-
+        
+        temaActual = themes.ApplyDarkTheme
+        temaActual()
+        
     def setup_ui(self):
         layout = QtWidgets.QVBoxLayout(self)
         
         titleLayout = QtWidgets.QHBoxLayout(self)
+        
+        self.btn_theme = QtWidgets.QPushButton()
+        self.btn_theme.setStyleSheet("""
+                                min-width: 20px;
+                                min-height: 25px;
+                                max-width: 20px;
+                                max-height: 25px;
+                                font-size: 11px;
+                                padding: 3px 8px;
+                            """)
+        self.btn_theme.setIcon(QtGui.QIcon("Icons/DarkTheme Icon.png"))
+        
+    
+        
+        titleLayout.addWidget(self.btn_theme)
         
         title = QtWidgets.QLabel()
         title.setText("Series Renamer APP")
@@ -31,11 +48,6 @@ class MainWindow(QtWidgets.QWidget):
         title.setStyleSheet("font-size:24px;font-weight:bold;")
         titleLayout.addWidget(title)
         
-        # Boton para cambiar el tema
-        btn_theme = QtWidgets.QPushButton()
-        # btn_theme.setStyleSheet()
-        
-        titleLayout.addWidget(btn_theme)
         layout.addLayout(titleLayout)
 
         folder_layout = QtWidgets.QHBoxLayout()
@@ -128,3 +140,13 @@ class MainWindow(QtWidgets.QWidget):
                     self.result.append(f"{file} -> {new_name}")
                 except Exception as e:
                     self.result.append(str(e))
+                    
+    # def update_button(self):
+    #     if ApplyDarkTheme:
+    #         self.btn_theme.
+        
+            
+
+    def choose_theme(self):
+        pass
+    
