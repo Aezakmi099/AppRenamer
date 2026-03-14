@@ -22,12 +22,21 @@ class MainWindow(QtWidgets.QWidget):
 
     def setup_ui(self):
         layout = QtWidgets.QVBoxLayout(self)
-
+        
+        titleLayout = QtWidgets.QHBoxLayout(self)
+        
         title = QtWidgets.QLabel()
         title.setText("Series Renamer APP")
         title.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet("font-size:24px;font-weight:bold;")
-        layout.addWidget(title)
+        titleLayout.addWidget(title)
+        
+        # Boton para cambiar el tema
+        btn_theme = QtWidgets.QPushButton()
+        # btn_theme.setStyleSheet()
+        
+        titleLayout.addWidget(btn_theme)
+        layout.addLayout(titleLayout)
 
         folder_layout = QtWidgets.QHBoxLayout()
 
