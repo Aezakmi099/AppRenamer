@@ -1,7 +1,8 @@
 from PySide6 import QtWidgets
 
-def ApplyDarkTheme(widget: QtWidgets.QWidget):
-    widget.setStyleSheet("""
+class themes():
+    def ApplyDarkTheme(widget: QtWidgets.QWidget):
+        widget.setStyleSheet("""
         /* ========== ESTILOS GENERALES ========== */
         QWidget {
             background-color: #1a1b26;
@@ -408,8 +409,8 @@ def ApplyDarkTheme(widget: QtWidgets.QWidget):
         }
     """)
     # PROXIMAMENTE AGREGARE EL TEMA BLANCO, PERO PRIMERO QUIERO TERMINAR DE PULIR EL TEMA OSCURO 
-def ApplyLightTheme(self):
-    self.setStyleSheet("""
+    def ApplyLightTheme(self):
+        self.setStyleSheet("""
         /* ========== ESTILOS GENERALES ========== */
         QWidget {
             background-color: #f5f7fa;
