@@ -1,10 +1,8 @@
 from PySide6 import QtWidgets
 
 
-
-class themes():
-    def ApplyDarkTheme(widget: QtWidgets.QWidget):
-        widget.setStyleSheet("""
+def ApplyDarkTheme(widget: QtWidgets.QWidget):
+    widget.setStyleSheet("""
         /* ========== ESTILOS GENERALES ========== */
         QWidget {
             background-color: #1a1b26;
@@ -411,8 +409,9 @@ class themes():
         }
     """)
 
-    def ApplyLightTheme(self):
-        self.setStyleSheet("""
+
+def ApplyLightTheme(widget: QtWidgets.QWidget):
+    widget.setStyleSheet("""
         /* ========== ESTILOS GENERALES ========== */
         QWidget {
             background-color: #f5f7fa;

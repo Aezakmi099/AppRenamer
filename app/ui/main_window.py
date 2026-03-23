@@ -1,13 +1,11 @@
-
 import os
 from PySide6 import QtWidgets, QtCore, QtGui
 
 from app.core.renamer import extraer_numero
-from app.styles.theme import themes
+from app.styles.theme import ApplyDarkTheme, ApplyLightTheme
 
 
 class MainWindow(QtWidgets.QWidget):
-
     def __init__(self):
         super().__init__()
 
@@ -21,13 +19,12 @@ class MainWindow(QtWidgets.QWidget):
 
         self.setup_ui()
         self.apply_theme()  # aplicar el tema inicial
-        
-        
+
     def setup_ui(self):
         layout = QtWidgets.QVBoxLayout(self)
-        
+
         titleLayout = QtWidgets.QHBoxLayout(self)
-        
+
         self.btn_theme = QtWidgets.QPushButton()
         self.btn_theme.setStyleSheet("""
                                 min-width: 20px;
@@ -41,13 +38,13 @@ class MainWindow(QtWidgets.QWidget):
         self.btn_theme.clicked.connect(self.toggle_theme)
 
         titleLayout.addWidget(self.btn_theme)
-        
+
         title = QtWidgets.QLabel()
         title.setText("Series Renamer APP")
         title.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet("font-size:24px;font-weight:bold;")
         titleLayout.addWidget(title)
-        
+
         layout.addLayout(titleLayout)
 
         folder_layout = QtWidgets.QHBoxLayout()
@@ -112,7 +109,6 @@ class MainWindow(QtWidgets.QWidget):
             return
 
         for file in os.listdir(path):
-
             numero = extraer_numero(file)
 
             if numero:
@@ -124,11 +120,9 @@ class MainWindow(QtWidgets.QWidget):
     def rename_files(self):
 
         for file in self.videos:
-
             numero = extraer_numero(file)
 
             if numero:
-
                 ext = os.path.splitext(file)[1]
                 new_name = f"{numero}{ext}"
 
@@ -140,33 +134,23 @@ class MainWindow(QtWidgets.QWidget):
                     self.result.append(f"{file} -> {new_name}")
                 except Exception as e:
                     self.result.append(str(e))
-                    
-    # def update_button(self):
-    #     if ApplyDarkTheme:
-    #         self.btn_theme.
-        
-            
 
     def apply_theme(self):
         if self.current_theme == "dark":
-            themes.ApplyDarkTheme(self)
+            ApplyDarkTheme(self)
             self.btn_theme.setIcon(QtGui.QIcon("Icons/DarkTheme Icon.png"))
-            self.btn_theme.setToolTip("Modo oscuro activo")
         else:
-            themes.ApplyLightTheme(self)
+            ApplyLightTheme(self)
             self.btn_theme.setIcon(QtGui.QIcon("Icons/LightTheme Icon.png"))
-            self.btn_theme.setToolTip("Modo claro activo")
 
     def toggle_theme(self):
         self.result.clear()
-        
+
         self.current_theme = "light" if self.current_theme == "dark" else "dark"
         self.apply_theme()
-        self.result.append(f"Tema actual: {self.current_theme}")
 
     def choose_theme(self, theme_name: str):
         if theme_name not in ["dark", "light"]:
             raise ValueError("theme_name debe ser 'dark' o 'light'")
         self.current_theme = theme_name
         self.apply_theme()
-    
