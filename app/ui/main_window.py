@@ -1,7 +1,4 @@
-import os
 from PySide6 import QtWidgets, QtCore, QtGui
-
-from app.core.renamer import extraer_numero
 from app.styles.theme import ApplyDarkTheme, ApplyLightTheme
 
 
@@ -14,6 +11,7 @@ class MainWindow(QtWidgets.QWidget):
 
         self.path = ""
         self.videos = []
+        self.result = []
 
         self.current_theme = "dark"  # variable que guarda el tema actual
 
@@ -55,7 +53,7 @@ class MainWindow(QtWidgets.QWidget):
 
         browse_btn = QtWidgets.QPushButton("Buscar")
         browse_btn.setIcon(QtGui.QIcon("Icons/File Icons.png"))
-        browse_btn.clicked.connect(self.select_folder)
+        # browse_btn.clicked.connect(self.select_folder)
         folder_layout.addWidget(browse_btn)
 
         layout.addLayout(folder_layout)
@@ -70,16 +68,22 @@ class MainWindow(QtWidgets.QWidget):
 
         layout.addLayout(lists)
 
+        layout_path = QtWidgets.QHBoxLayout()
+        inputName = QtWidgets.QLineEdit()
+        inputName.setPlaceholderText("Que desea eliminar del nombre??")
+        layout_path.addWidget(inputName)
+        layout.addLayout(layout_path)
+
         btn_layout = QtWidgets.QHBoxLayout()
 
         scan_btn = QtWidgets.QPushButton("Escanear")
         scan_btn.setIcon(QtGui.QIcon("Icons/Scan Icons.png"))
-        scan_btn.clicked.connect(self.scan_folder)
+        # scan_btn.clicked.connect(self.scan_folder)
         btn_layout.addWidget(scan_btn)
 
         rename_btn = QtWidgets.QPushButton("Renombrar")
         rename_btn.setIcon(QtGui.QIcon("Icons/Rename Icons.png"))
-        rename_btn.clicked.connect(self.rename_files)
+        # rename_btn.clicked.connect(self.rename_files)
         btn_layout.addWidget(rename_btn)
 
         layout.addLayout(btn_layout)
@@ -88,52 +92,11 @@ class MainWindow(QtWidgets.QWidget):
         self.result.setReadOnly(True)
         layout.addWidget(self.result)
 
-    def select_folder(self):
-
-        folder = QtWidgets.QFileDialog.getExistingDirectory(self, "Seleccionar carpeta")
-
-        if folder:
-            self.path = folder
-            self.path_input.setText(folder)
-
-    def scan_folder(self):
-
-        self.file_list.clear()
-        self.preview_list.clear()
-        self.videos.clear()
-
-        path = self.path_input.text()
-
-        if not os.path.isdir(path):
-            self.result.append("Ruta inválida")
-            return
-
-        for file in os.listdir(path):
-            numero = extraer_numero(file)
-
-            if numero:
-                new_name = f"{numero}{os.path.splitext(file)[1]}"
-                self.file_list.addItem(file)
-                self.preview_list.addItem(new_name)
-                self.videos.append(file)
-
-    def rename_files(self):
-
-        for file in self.videos:
-            numero = extraer_numero(file)
-
-            if numero:
-                ext = os.path.splitext(file)[1]
-                new_name = f"{numero}{ext}"
-
-                old = os.path.join(self.path, file)
-                new = os.path.join(self.path, new_name)
-
-                try:
-                    os.rename(old, new)
-                    self.result.append(f"{file} -> {new_name}")
-                except Exception as e:
-                    self.result.append(str(e))
+        autor = QtWidgets.QLabel()
+        autor.setText("Hecho por Aezakmi")
+        autor.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight)
+        autor.setStyleSheet("font-size:10px;font-weight:bold;")
+        layout.addWidget(autor)
 
     def apply_theme(self):
         if self.current_theme == "dark":
