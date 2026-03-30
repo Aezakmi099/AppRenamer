@@ -1,144 +1,104 @@
-# 🎬 Series Renamer APP
+# Series Renamer APP
 
-Aplicación de escritorio para renombrar automáticamente episodios de
-series detectando su número directamente desde el nombre del archivo.
-
-Escanea archivos de video y subtítulos dentro de una carpeta, identifica
-el número de episodio usando múltiples patrones comunes y los renombra
-de forma ordenada.
-
-Incluye una interfaz gráfica moderna con tema oscuro, construida con
-PySide6.
+Series Renamer APP es una aplicación de escritorio desarrollada en Python con PySide6, diseñada para renombrar archivos de series y sus subtítulos de manera rápida y automática, eliminando textos específicos de los nombres y manteniendo un orden natural.
 
 ---
 
-## ✨ Características principales
+## 🔹 Características
 
--  Interfaz gráfica simple e intuitiva
--  Tema oscuro moderno
--  Detección automática del número de episodio
--  Compatible con múltiples formatos de nombres
--  Renombrado masivo en un solo clic
--  Ordenación numérica correcta (1, 2, 3, 10…)
--  Soporte para videos y subtítulos
--  Vista previa antes de aplicar cambios
+* Escanea carpetas y detecta automáticamente:
 
----
-
-## 📂 Archivos soportados
-
-### 🎥 Video
--   .mp4
--   .avi
--   .mkv
--   .mov
--   .wmv
--   .flv
--   .webm
--   .mpg
-
-### 💬 Subtítulos
-
--   .srt
--   .sub
--   .ass
+  * Videos: `.mp4`, `.avi`, `.mkv`, `.mov`, `.wmv`, `.flv`, `.webm`
+  * Subtítulos: `.srt`, `.vtt`, `.ass`, `.ssa`, `.scc`, `.sub`, `.xml`
+* Muestra la lista de archivos originales y una vista previa de los nuevos nombres.
+* Permite eliminar texto específico de los nombres de archivos.
+* Orden natural de archivos (`1, 2, 3…` en lugar de `1, 10, 11…`).
+* Cambia automáticamente el nombre de los archivos y subtítulos relacionados.
+* Interfaz con temas claros y oscuros.
+* Instaladores disponibles para Windows y Linux en los releases del repositorio.
 
 ---
 
-## 🔍 Patrones detectados automáticamente
+## 🔹 Instalación
 
-El programa reconoce números de episodio en formatos como:
+1. Clona el repositorio:
 
-```
-- Capitulo 12 
-- Cap 12 
-- Episode 5 
-- Ep05 
-- Chapter 3 
-- Ch 7 E01 
-- 1x09 
-- c12
-- NombreSerie 15.mkv
-```
-
-### Y muchas variaciones adicionales.
-
----
-
-## 🖥 Cómo usar
-
-1.  Ejecuta la aplicación
-2.  Pulsa Buscar y selecciona la carpeta
-3.  Pulsa Escanear para ver la vista previa
-4.  Pulsa Renombrar
-
-### Resultado del renombrado:
-
-- Serie.capitulo.12.mkv → 12.mkv 
-- Episode_03.mp4 → 3.mp4
-
----
-
-## 🧊 Ejecutable 
-
-Descarga directamente desde Releases:
-
-- [Windows](https://github.com/Aezakmi099/AppRenamer/releases/download/v1.0.0/AppRenamer.exe)
-
-- [Linux](https://github.com/Aezakmi099/AppRenamer/releases/download/v1.0.0/AppRenamer)
-
-
----
-
-## 📦 Instalación manual (opcional)
-
-Requisitos: Python 3.9 o superior
-
-Instalar dependencias: 
 ```bash
-pip install PySide6
+git clone https://github.com/TU_USUARIO/SeriesRenamerAPP.git
+cd SeriesRenamerAPP
 ```
-Ejecutar desde el código fuente: 
+
+2. Instala las dependencias:
+
 ```bash
-python main.py
+pip install PySide6 natsort
 ```
+
+3. Ejecuta la aplicación:
+
+```bash
+python main_window.py
+```
+
+> O descarga el instalador adecuado desde los [releases](https://github.com/TU_USUARIO/SeriesRenamerAPP/releases) para tu sistema operativo.
+
 ---
 
-## 📁 Estructura del proyecto
+## 🔹 Uso
+
+1. Selecciona la carpeta donde se encuentran tus archivos de series y subtítulos.
+2. Ingresa el texto que deseas eliminar de los nombres.
+3. Presiona **Escanear** para ver los archivos y la vista previa de los nuevos nombres.
+4. Presiona **Renombrar** para aplicar los cambios.
+5. Cambia el tema si lo deseas usando el botón superior.
+
+---
+
+## 🔹 Estructura del proyecto
 
 ```
-project/
-│
+SeriesRenamerAPP/
+├── Icons 
+│   ├── DarkTheme Icon.png
+│   ├── File Icons.png
+│   ├── Icon.ico
+│   ├── Icon.png
+│   ├── LightTheme Icon.png
+│   ├── Not.png
+│   ├── Rename Icons.png
+│   ├── Scan Icons.png
+│   ├── Warning.png
+│   └── Yes.png
+├── LICENSE   
+├── README.md
+├── app
+│   ├── core  
+│   ├── styles
+│   └── ui
 ├── main.py
-├── Icon.ico 
-└── README.md
+└── requirements.txt
 ```
 
 ---
 
-## ⚠ Recomendaciones importantes
+## 🔹 Contribución
 
--   Haz copia de seguridad antes de renombrar archivos importantes
--   Evita archivos con números que no correspondan al episodio
--   Revisa siempre la vista previa antes de confirmar cambios
+Si quieres contribuir:
 
----
-
-## 🧠 Cómo funciona internamente
-
-1.  Escanea los nombres de los archivos
-2.  Aplica expresiones regulares para detectar el número de episodio
-3.  Ordena los archivos numéricamente
-4.  Renombra usando únicamente el número detectado
+1. Haz un fork del proyecto.
+2. Crea una rama para tu feature: `git checkout -b feature/nombre-del-feature`
+3. Haz commit de tus cambios: `git commit -m "Descripción"`
+4. Sube tu rama al repositorio: `git push origin feature/nombre-del-feature`
+5. Abre un pull request.
 
 ---
 
-## 👨‍💻 Autor
+## 🔹 Autor
 
-- Aezakmi099
+**Aezakmi099**
 
 ---
 
-## 📜 Licencia
+## 🔹 Licencia
 
-Uso libre para proyectos personales y educativos.
+Este proyecto está bajo la licencia MIT.
