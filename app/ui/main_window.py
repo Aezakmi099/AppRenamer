@@ -1,34 +1,48 @@
-
-import os
 from PySide6 import QtWidgets, QtCore, QtGui
-
-from app.core.renamer import extraer_numero
-from app.styles.theme import ApplyDarkTheme
+from app.core import renamer
+from app.styles.theme import ApplyDarkTheme, ApplyLightTheme
 
 
 class MainWindow(QtWidgets.QWidget):
-
     def __init__(self):
         super().__init__()
 
         self.setWindowTitle("Series Renamer APP")
         self.resize(900, 600)
 
-        self.path = ""
         self.videos = []
+        self.current_theme = "dark"
+
+        self.renamer = renamer.process(self)
 
         self.setup_ui()
-        ApplyDarkTheme(self)
+        self.apply_theme()
 
     def setup_ui(self):
         layout = QtWidgets.QVBoxLayout(self)
+        # 🔹 HEADER
+        titleLayout = QtWidgets.QHBoxLayout()
 
-        title = QtWidgets.QLabel()
-        title.setText("Series Renamer APP")
+        self.btn_theme = QtWidgets.QPushButton()
+        self.btn_theme.setStyleSheet("""
+            min-width: 10px;
+            min-height: 15px;
+            max-width: 10px;
+            max-height: 15px;
+        """)
+        self.btn_theme.setIcon(QtGui.QIcon("Icons/DarkTheme Icon.png"))
+        self.btn_theme.clicked.connect(self.toggle_theme)
+
+        titleLayout.addWidget(self.btn_theme)
+
+        title = QtWidgets.QLabel("Series Renamer APP")
         title.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         title.setStyleSheet("font-size:24px;font-weight:bold;")
-        layout.addWidget(title)
 
+        titleLayout.addWidget(title)
+        layout.addLayout(titleLayout)
+
+        # 🔹 PATH
         folder_layout = QtWidgets.QHBoxLayout()
 
         self.path_input = QtWidgets.QLineEdit()
@@ -42,6 +56,7 @@ class MainWindow(QtWidgets.QWidget):
 
         layout.addLayout(folder_layout)
 
+        # 🔹 LISTAS
         lists = QtWidgets.QHBoxLayout()
 
         self.file_list = QtWidgets.QListWidget()
@@ -52,70 +67,73 @@ class MainWindow(QtWidgets.QWidget):
 
         layout.addLayout(lists)
 
+        # 🔹 INPUT TEXTO
+        layout_path = QtWidgets.QHBoxLayout()
+
+        self.inputName = QtWidgets.QLineEdit()
+        self.inputName.setPlaceholderText("Que desea eliminar del nombre??")
+
+        layout_path.addWidget(self.inputName)
+        layout.addLayout(layout_path)
+
+        # 🔹 BOTONES
         btn_layout = QtWidgets.QHBoxLayout()
 
         scan_btn = QtWidgets.QPushButton("Escanear")
         scan_btn.setIcon(QtGui.QIcon("Icons/Scan Icons.png"))
-        scan_btn.clicked.connect(self.scan_folder)
-        btn_layout.addWidget(scan_btn)
+        scan_btn.clicked.connect(self.handle_scan)
 
         rename_btn = QtWidgets.QPushButton("Renombrar")
         rename_btn.setIcon(QtGui.QIcon("Icons/Rename Icons.png"))
-        rename_btn.clicked.connect(self.rename_files)
+        rename_btn.clicked.connect(self.handle_rename)
+
+        btn_layout.addWidget(scan_btn)
         btn_layout.addWidget(rename_btn)
 
         layout.addLayout(btn_layout)
 
+        # 🔹 RESULTADO
         self.result = QtWidgets.QTextEdit()
         self.result.setReadOnly(True)
         layout.addWidget(self.result)
 
+        # 🔹 FOOTER
+        autor = QtWidgets.QLabel("Hecho por Aezakmi099")
+        autor.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight)
+        autor.setStyleSheet("font-size:10px;font-weight:bold;")
+
+        layout.addWidget(autor)
+
+    # 🔹 LOGICA
     def select_folder(self):
-
         folder = QtWidgets.QFileDialog.getExistingDirectory(self, "Seleccionar carpeta")
-
         if folder:
-            self.path = folder
             self.path_input.setText(folder)
 
-    def scan_folder(self):
+    def handle_scan(self):
+        resultado = self.renamer.scanFolder()
+        self.result.setText(resultado)
 
-        self.file_list.clear()
-        self.preview_list.clear()
-        self.videos.clear()
+    def handle_rename(self):
+        resultado = self.renamer.renameFiles()
+        self.result.setText(resultado)
 
-        path = self.path_input.text()
+    # 🔹 TEMAS
+    def apply_theme(self):
+        if self.current_theme == "dark":
+            ApplyDarkTheme(self)
+            self.btn_theme.setIcon(QtGui.QIcon("Icons/DarkTheme Icon.png"))
+        else:
+            ApplyLightTheme(self)
+            self.btn_theme.setIcon(QtGui.QIcon("Icons/LightTheme Icon.png"))
 
-        if not os.path.isdir(path):
-            self.result.append("Ruta inválida")
-            return
+    def toggle_theme(self):
+        self.result.clear()
+        self.current_theme = "light" if self.current_theme == "dark" else "dark"
+        self.apply_theme()
 
-        for file in os.listdir(path):
-
-            numero = extraer_numero(file)
-
-            if numero:
-                new_name = f"{numero}{os.path.splitext(file)[1]}"
-                self.file_list.addItem(file)
-                self.preview_list.addItem(new_name)
-                self.videos.append(file)
-
-    def rename_files(self):
-
-        for file in self.videos:
-
-            numero = extraer_numero(file)
-
-            if numero:
-
-                ext = os.path.splitext(file)[1]
-                new_name = f"{numero}{ext}"
-
-                old = os.path.join(self.path, file)
-                new = os.path.join(self.path, new_name)
-
-                try:
-                    os.rename(old, new)
-                    self.result.append(f"{file} -> {new_name}")
-                except Exception as e:
-                    self.result.append(str(e))
+    def choose_theme(self, theme_name: str):
+        if theme_name not in ["dark", "light"]:
+            raise ValueError("theme_name debe ser 'dark' o 'light'")
+        self.current_theme = theme_name
+        self.apply_theme()
