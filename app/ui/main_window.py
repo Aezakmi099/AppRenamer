@@ -25,10 +25,10 @@ class MainWindow(QtWidgets.QWidget):
 
         self.btn_theme = QtWidgets.QPushButton()
         self.btn_theme.setStyleSheet("""
-            min-width: 20px;
-            min-height: 25px;
-            max-width: 20px;
-            max-height: 25px;
+            min-width: 10px;
+            min-height: 15px;
+            max-width: 10px;
+            max-height: 15px;
         """)
         self.btn_theme.setIcon(QtGui.QIcon("Icons/DarkTheme Icon.png"))
         self.btn_theme.clicked.connect(self.toggle_theme)

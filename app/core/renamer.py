@@ -1,5 +1,6 @@
 # app/core/renamer.py
 from pathlib import Path
+from natsort import natsorted
 
 
 class process:
@@ -19,13 +20,29 @@ class process:
             if not ruta.exists():
                 return "❌ La ruta no existe"
 
-            video_extensions = {".mp4", ".avi", ".mkv", ".mov", ".wmv", ".flv", ".webm"}
+            extensions = {
+                ".mp4",
+                ".avi",
+                ".mkv",
+                ".mov",
+                ".wmv",
+                ".flv",
+                ".webm",
+                ".srt",
+                ".vtt",
+                ".ass",
+                ".ssa",
+                ".scc",
+                ".sub",
+                ".xml",
+            }
 
             videos = [
                 archivo.name
                 for archivo in ruta.iterdir()
-                if archivo.is_file() and archivo.suffix.lower() in video_extensions
+                if archivo.is_file() and archivo.suffix.lower() in extensions
             ]
+            videos = natsorted(videos)
 
             if not videos:
                 return f"⚠️ No se encontraron videos en {folder_path}"
@@ -37,17 +54,17 @@ class process:
 
             for video in videos:
                 self.main_window.file_list.addItem(video)
-                nuevo_nombre = video.replace(text_to_remove, "")
+                nuevo_nombre = " ".join(video.replace(text_to_remove, "").split())
                 self.main_window.preview_list.addItem(nuevo_nombre)
 
-            return f"✅ {len(videos)} videos encontrados\n🗑️ Eliminando: '{text_to_remove}'"
+            return ""
 
         except Exception as e:
             return f"❌ Error al escanear: {str(e)}"
 
     def renameFiles(self):
         text_to_remove = self.main_window.inputName.text()
-        folder_path = self.main_window.path_input.text()  # ✔ FIX
+        folder_path = self.main_window.path_input.text()
 
         if not hasattr(self.main_window, "videos") or not self.main_window.videos:
             return "❌ No hay archivos. Escanea primero."
@@ -59,7 +76,7 @@ class process:
 
             for video_name in self.main_window.videos:
                 old_path = ruta / video_name
-                new_name = video_name.replace(text_to_remove, "")
+                new_name = video_name.replace(text_to_remove, "").strip()
 
                 if new_name != video_name:
                     new_path = ruta / new_name
