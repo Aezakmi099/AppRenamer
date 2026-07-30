@@ -24,7 +24,7 @@ Series Renamer APP es una aplicación de escritorio desarrollada en Python con P
 1. Clona el repositorio:
 
 ```bash
-git clone https://github.com/TU_USUARIO/SeriesRenamerAPP.git
+git clone https://github.com/Aezakmi099/Series-Renamer.git
 cd SeriesRenamerAPP
 ```
 
@@ -40,7 +40,7 @@ pip install PySide6 natsort
 python main_window.py
 ```
 
-> O descarga el instalador adecuado desde los [releases](https://github.com/TU_USUARIO/SeriesRenamerAPP/releases) para tu sistema operativo.
+> O descarga el instalador adecuado desde los [releases](https://github.com/Aezakmi099/Series-Renamer/releases) para tu sistema operativo.
 
 ---
 
